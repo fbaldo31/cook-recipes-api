@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 
 import Timestamp from "../abstract/timestamp.abstract";
 import { Ingredient } from "./ingredient.entity";
@@ -10,15 +10,13 @@ export class IngredientsQuantity extends Timestamp {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(type => Ingredient, { eager: true, cascade: ['insert'] })
-  @JoinTable()
+  @ManyToOne(() => Ingredient, i => i.ingredientsQuantity, { eager: true, cascade: ['insert'] })
   ingredient: Ingredient;
 
   @Column({ type: 'smallint' })
   quantity: number;
 
-  @ManyToMany(type => Unit, unit => unit.ingredientsQuantity, { eager: true, cascade: ['insert'] })
-  @JoinTable()
+  @ManyToOne(() => Unit, unit => unit.ingredientsQuantity, { eager: true, cascade: ['insert'] })
   unit: Unit;
 
   @ManyToOne(type => Recipe, recipe => recipe.ingredients)

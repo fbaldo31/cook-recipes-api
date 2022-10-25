@@ -4,7 +4,7 @@ import { recipeTest } from "./recipe";
 import { unitTest } from "./unit";
 
 export const ingredientQtyTest: IngredientsQuantity = {
-    id: 0,
+    id: 1,
     ingredient: ingredientTest,
     unit: unitTest,
     quantity: 1,

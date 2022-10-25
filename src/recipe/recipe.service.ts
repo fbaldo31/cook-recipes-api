@@ -39,9 +39,9 @@ export class RecipeService {
         private readonly repo: Repository<Recipe>,
         @InjectRepository(IngredientsQuantity)
         private readonly ingredientsQuantityRepo: Repository<IngredientsQuantity>,
-        @InjectRepository(IngredientsQuantity)
+        @InjectRepository(Ingredient)
         private readonly ingredientsRepo: Repository<Ingredient>,
-        @InjectRepository(IngredientsQuantity)
+        @InjectRepository(Unit)
         private readonly unitsRepo: Repository<Unit>,
         @InjectRepository(Step)
         private readonly stepRepo: Repository<Step>,
@@ -66,23 +66,23 @@ export class RecipeService {
         }
 
         try {
-            const recipe = this.repo.create({
+            const recipe = await this.repo.save(this.repo.create({
                 title: recipeDto.title,
                 preparationTime: recipeDto.preparationTime,
                 cookingTime: recipeDto.cookingTime,
                 difficulty: recipeDto.difficulty,
-            });
+            }));
             const promises: Promise<any>[] = [
                 // Build ingredientsQuantity
                 ...recipeDto.ingredients.map(async e => {
                     const ingredient = await this.createIngredient(e.name);
                     const unit = await this.createUnit(e.unit);
-                    return this.ingredientsQuantityRepo.save(this.ingredientsQuantityRepo.create({
+                    return this.ingredientsQuantityRepo.save({
                         ingredient,
                         quantity: e.quantity,
                         unit,
                         recipe
-                    }));
+                    });
                 }),
                 // Build Steps
                 ...recipeDto.steps.map(e => this.stepRepo.save(this.stepRepo.create({...e, recipe}))),
@@ -90,7 +90,7 @@ export class RecipeService {
             // Save relations
             await Promise.all(promises);
             // Save recipe
-            return this.repo.save(this.repo.create(recipe));
+            return this.repo.findOneBy({id: recipe.id});
         } catch (error) {
             Logger.error(error.message, 'RecipeService.create');
         }
@@ -115,7 +115,10 @@ export class RecipeService {
     }
 
     async addPhoto(recipeId: number, data: Express.Multer.File[]): Promise<any> {
-        const recipe = await this.repo.findOne({where: {id: recipeId}, select: ['title']})
+        const recipe = await this.repo.findOne({where: {id: recipeId}});
+        if (!recipe || !data) {
+            return;
+        }
         return Promise.all(data.map(file => {
             Logger.log(`Save photo ${file.filename}`, 'RecipeService.addPhoto');
 

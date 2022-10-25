@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
 
 import Timestamp from "../abstract/timestamp.abstract";
 import { IngredientsQuantity } from "./ingredients_quantity.entity";
@@ -14,6 +14,6 @@ export class Unit extends Timestamp {
   @Column({ unique: true })
   slug: string;
 
-  @ManyToMany(type => IngredientsQuantity)
+  @OneToMany(type => IngredientsQuantity, i => i.unit)
   ingredientsQuantity: IngredientsQuantity;
 }

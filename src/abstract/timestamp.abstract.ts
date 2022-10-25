@@ -1,12 +1,12 @@
 import { CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 
 export default abstract class Timestamp {
-    @CreateDateColumn()
+    @CreateDateColumn({select: false})
     createdDate: Date;
     
-    @UpdateDateColumn()
+    @UpdateDateColumn({select: false})
     updatedDate: Date;
     
-    @DeleteDateColumn()
+    @DeleteDateColumn({select: false})
     deletedDate: Date;
 }

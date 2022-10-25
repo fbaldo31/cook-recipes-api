@@ -1,8 +1,8 @@
 {
   "name": "cook-recipes-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
-  "author": "",
+  "author": "Frédérick BALDO <f.baldo31@gmail.com>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
 
 import Timestamp from "../abstract/timestamp.abstract";
 import { IngredientsQuantity } from "./ingredients_quantity.entity";
@@ -11,6 +11,6 @@ export class Ingredient extends Timestamp {
   @Column({ unique: true })
   name: string;
 
-  @ManyToMany(type => IngredientsQuantity, ingredientsQuantity => ingredientsQuantity.ingredient)
+  @OneToMany(type => IngredientsQuantity, ingredientsQuantity => ingredientsQuantity.ingredient)
   ingredientsQuantity: IngredientsQuantity[]
 }

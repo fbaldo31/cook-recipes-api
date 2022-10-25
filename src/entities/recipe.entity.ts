@@ -11,7 +11,7 @@ export class Recipe extends Timestamp {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({unique: true})
   title: string;
 
   @Column({ type: 'smallint' })
@@ -23,12 +23,12 @@ export class Recipe extends Timestamp {
   @Column()
   difficulty: Difficulty;
 
-  @OneToMany(type => IngredientsQuantity, ingredients => ingredients.recipe)
+  @OneToMany(type => IngredientsQuantity, ingredients => ingredients.recipe, {eager: true})
   ingredients: IngredientsQuantity[];
 
-  @OneToMany(type => Step, step => step.recipe)
+  @OneToMany(type => Step, step => step.recipe, {eager: true})
   steps: Step[];
 
-  @OneToMany(type => Photo, photo => photo.recipe)
+  @OneToMany(type => Photo, photo => photo.recipe, {eager: true})
   photos?: Photo[];
 }

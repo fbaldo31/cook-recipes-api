@@ -28,6 +28,6 @@ export class RecipeController {
         @UploadedFiles() photos: Array<Express.Multer.File>,
         @Param('id') id: string,
     ) {
-        return this.service.addPhoto(+id, photos);
+        return this.service.addPhoto(+id, Array.isArray(photos) ? photos : photos);
     }
 }

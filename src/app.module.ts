@@ -19,6 +19,7 @@ import { FileService } from './services/file/file.service';
         username: configService.get('DATABASE_USER'),
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
+        schema: configService.get('DATABASE_SCHEMA'),
         entities: [__dirname + '/entities/*.entity{.ts,.js}'],
         synchronize: configService.get('NOVE_ENV') === 'producion' ? false : true,
         cache: true,
