@@ -5,12 +5,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { RecipeModule } from './../src/recipe/recipe.module';
-import { recipeTest } from './mock/recipe';
 import { recipeDtoTest } from './mock/recipeDto';
-import { photoTest } from './mock/photo';
 
 describe('RecipeController (e2e)', () => {
   let app: INestApplication;
+  let idTest: number;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -46,8 +45,7 @@ describe('RecipeController (e2e)', () => {
       .send(recipeDtoTest)
       .expect(201)
       .then((res: any) => {
-        console.log('post', res.body);
-        
+        idTest = res?.body?.id;
         expect(res.body).toHaveProperty('id');
         expect(res.body).toHaveProperty('title');
         expect(res.body).toHaveProperty('preparationTime');
@@ -74,9 +72,9 @@ describe('RecipeController (e2e)', () => {
       });
   });
 
-  it('/recipe/1 (GET)', () => {
+  it('/recipe/:id (GET)', () => {
     return request(app.getHttpServer())
-      .get('/recipe/1')
+      .get('/recipe/' + idTest)
       .expect(200)
       .then((res: any) => {
         expect(res.body).toHaveProperty('id');
@@ -89,11 +87,18 @@ describe('RecipeController (e2e)', () => {
       });
   });
 
-  it('/recipe/1/photo (POST)', () => {
+  it('/recipe/:id/photo (POST)', () => {
     return request(app.getHttpServer())
-      .post('/recipe/1/photo')
+      .post('/recipe/'+ idTest +'/photo')
       .attach('photos', Buffer.from([1,1,1]), 'test.test.jpg')
       .expect(201)
       .expect({}); /** @todo Fix it */
+  });
+
+  it('/recipe (DELETE)', () => {
+    return request(app.getHttpServer())
+      .delete('/recipe/' + idTest)
+      .send(recipeDtoTest)
+      .expect(200);
   });
 });

@@ -23,12 +23,12 @@ export class Recipe extends Timestamp {
   @Column()
   difficulty: Difficulty;
 
-  @OneToMany(type => IngredientsQuantity, ingredients => ingredients.recipe, {eager: true})
+  @OneToMany(() => IngredientsQuantity, ingredients => ingredients.recipe, {eager: true})
   ingredients: IngredientsQuantity[];
 
-  @OneToMany(type => Step, step => step.recipe, {eager: true})
+  @OneToMany(() => Step, step => step.recipe, {eager: true})
   steps: Step[];
 
-  @OneToMany(type => Photo, photo => photo.recipe, {eager: true})
+  @OneToMany(() => Photo, photo => photo.recipe, {eager: true})
   photos?: Photo[];
 }

@@ -19,4 +19,4 @@ export const recipeDtoTest: RecipeDto = {
         text: "Etape test"
       }
     ]
-}
+};

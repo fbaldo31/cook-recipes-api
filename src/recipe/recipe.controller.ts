@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UploadedFiles } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UploadedFiles } from '@nestjs/common';
 
 import { RecipeDto } from '../dto/recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
@@ -21,6 +21,11 @@ export class RecipeController {
     @Post()
     create(@Body() recipe: RecipeDto): Promise<Recipe> {
         return this.service.create(recipe);
+    }
+
+    @Delete(':id')
+    delete(@Param('id') id: string): Promise<Recipe> {
+        return this.service.delete(+id);
     }
 
     @Post('/:id/photo')

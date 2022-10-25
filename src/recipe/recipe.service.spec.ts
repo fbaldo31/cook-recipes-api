@@ -63,21 +63,25 @@ describe('RecipeService', () => {
   });
 
   it('should create', async () => {
-    jest.spyOn(mockUnitRepo, 'create').mockReturnValue(unitTest);
-    jest.spyOn(mockIngredientRepo, 'create').mockReturnValue(ingredientTest);
-    jest.spyOn(mockIngredientsQuantityRepo, 'create').mockReturnValue(ingredientQtyTest);
-    jest.spyOn(mockRecipeRepo, 'save').mockResolvedValue(recipeTest);
+    jest.spyOn(mockUnitRepo, 'save').mockReturnValue(<any>unitTest);
+    jest.spyOn(mockIngredientRepo, 'save').mockReturnValue(<any>ingredientTest);
+    jest.spyOn(mockIngredientsQuantityRepo, 'save').mockReturnValue(<any>ingredientQtyTest);
+    jest.spyOn(mockRecipeRepo, 'findOneBy').mockReturnValue(<any>recipeTest);
     expect(await service.create(recipeDtoTest)).toEqual(recipeTest);
   });
 
   it('should addPhoto', async () => {
     jest.spyOn(mockRecipeRepo, 'findOne').mockResolvedValue(recipeTest);
-    // jest.spyOn(mockPhotoRepo, 'save').mockResolvedValue({
-    //   label: photoTest.label,
-    //   name: photoTest.name,
-    //   url: photoTest.url,
-    //   recipe: recipeTest,
-    // });
     expect(await service.addPhoto(recipeTest.id, [<any>{filename: 'test.jpg'}])).toEqual([photoTest]);
+  });
+
+  it('should delete recipe', async () => {
+    const expectedResult = {
+      ...recipeTest,
+      ingredients: [],
+      steps: []
+    };
+    jest.spyOn(mockRecipeRepo, 'remove').mockResolvedValue(expectedResult);
+    expect(await service.delete(recipeTest.id)).toEqual(expectedResult);
   });
 });

@@ -132,4 +132,25 @@ export class RecipeService {
             return this.photoRepo.save(photo);
         }));
     }
+
+    async delete(id: number): Promise<Recipe> {
+        const recipe = await this.repo.findOne({where: {id}});
+        if (!recipe) {
+            return;
+        }
+        try {
+            if (recipe.photos?.length) {
+                await this.photoRepo.remove(recipe.photos);
+            }
+            if (recipe.ingredients?.length) {
+                await this.ingredientsQuantityRepo.remove(recipe.ingredients);
+            }
+            if (recipe.steps?.length) {
+                await this.stepRepo.remove(recipe.steps);
+            }
+            return this.repo.remove(recipe);
+        } catch (error) {
+            Logger.error(error.message, 'RecipeService.delete');
+        }
+    }
 }
