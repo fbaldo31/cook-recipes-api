@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { readFile } from 'fs/promises';
+import { promises } from 'fs';
 import { join } from 'path';
+const readFile = promises.readFile;
 
 import { FileService } from './file.service';
 

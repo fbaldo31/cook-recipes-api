@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {join} from 'path';
 import {pipeline, Readable, } from 'stream';
-import {createWriteStream, WriteStream} from 'fs';
-import {unlink, readdir} from 'fs/promises';
-
+import {createWriteStream, WriteStream, promises} from 'fs';
+const unlink = promises.unlink;
+const readdir = promises.readdir;
 
 @Injectable()
 export class FileService {
