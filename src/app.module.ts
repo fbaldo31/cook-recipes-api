@@ -6,6 +6,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RecipeModule } from './recipe/recipe.module';
 import { FileService } from './services/file/file.service';
+import { IngredientController } from './ingredient/ingredient.controller';
+import { IngredientService } from './ingredient/ingredient.service';
+import { IngredientModule } from './ingredient/ingredient.module';
 
 @Module({
   imports: [
@@ -27,8 +30,9 @@ import { FileService } from './services/file/file.service';
       inject: [ConfigService],
     }),
     RecipeModule,
+    IngredientModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, FileService],
+  controllers: [AppController, IngredientController],
+  providers: [AppService, FileService, IngredientService],
 })
 export class AppModule {}
