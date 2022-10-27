@@ -6,8 +6,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RecipeModule } from './recipe/recipe.module';
 import { FileService } from './services/file/file.service';
-import { IngredientController } from './ingredient/ingredient.controller';
-import { IngredientService } from './ingredient/ingredient.service';
 import { IngredientModule } from './ingredient/ingredient.module';
 
 @Module({
@@ -32,7 +30,7 @@ import { IngredientModule } from './ingredient/ingredient.module';
     RecipeModule,
     IngredientModule,
   ],
-  controllers: [AppController, IngredientController],
-  providers: [AppService, FileService, IngredientService],
+  controllers: [AppController],
+  providers: [AppService, FileService],
 })
 export class AppModule {}
