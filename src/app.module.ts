@@ -7,10 +7,11 @@ import { AppService } from './app.service';
 import { RecipeModule } from './recipe/recipe.module';
 import { FileService } from './services/file/file.service';
 import { IngredientModule } from './ingredient/ingredient.module';
+import { MarmitonService } from './services/marmiton/marmiton.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({cache: true,}),
+    ConfigModule.forRoot({ cache: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -22,7 +23,8 @@ import { IngredientModule } from './ingredient/ingredient.module';
         database: configService.get('DATABASE_NAME'),
         schema: configService.get('DATABASE_SCHEMA'),
         entities: [__dirname + '/entities/*.entity{.ts,.js}'],
-        synchronize: configService.get('NOVE_ENV') === 'producion' ? false : true,
+        synchronize:
+          configService.get('NOVE_ENV') === 'producion' ? false : true,
         cache: true,
       }),
       inject: [ConfigService],
@@ -31,6 +33,6 @@ import { IngredientModule } from './ingredient/ingredient.module';
     IngredientModule,
   ],
   controllers: [AppController],
-  providers: [AppService, FileService],
+  providers: [AppService, FileService, MarmitonService],
 })
 export class AppModule {}

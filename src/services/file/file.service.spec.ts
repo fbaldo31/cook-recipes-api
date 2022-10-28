@@ -8,9 +8,20 @@ import { FileService } from './file.service';
 describe('FileService', () => {
   let service: FileService;
   const testImage = 'cookies.svg';
-  const filePath = join(__dirname, '..', '..', '..', '..', 'cook-recipes-front', 'src', 'assets', 'images', 'cookies.svg');
+  const filePath = join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    '..',
+    'cook-recipes-front',
+    'src',
+    'assets',
+    'images',
+    'cookies.svg',
+  );
   const testFolder = join(__dirname, '..', '..', '..', 'test');
-  
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [FileService],
@@ -31,7 +42,7 @@ describe('FileService', () => {
       expect(stream.bytesWritten).toBeGreaterThanOrEqual(10800);
     } catch (error) {
       console.error(error);
-      
+
       expect(error).toBeUndefined();
     }
   });

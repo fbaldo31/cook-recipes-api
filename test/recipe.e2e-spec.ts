@@ -14,7 +14,7 @@ describe('RecipeController (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        ConfigModule.forRoot({cache: true,}),
+        ConfigModule.forRoot({ cache: true }),
         TypeOrmModule.forRootAsync({
           imports: [ConfigModule],
           useFactory: (configService: ConfigService) => ({
@@ -26,12 +26,13 @@ describe('RecipeController (e2e)', () => {
             database: configService.get('DATABASE_NAME'),
             schema: 'test',
             entities: [__dirname + '/../src/entities/*.entity{.ts,.js}'],
-            synchronize: configService.get('NOVE_ENV') === 'producion' ? false : true,
+            synchronize:
+              configService.get('NOVE_ENV') === 'producion' ? false : true,
             cache: false,
           }),
           inject: [ConfigService],
         }),
-        RecipeModule
+        RecipeModule,
       ],
     }).compile();
 
@@ -89,8 +90,8 @@ describe('RecipeController (e2e)', () => {
 
   it('/recipe/:id/photo (POST)', () => {
     return request(app.getHttpServer())
-      .post('/recipe/'+ idTest +'/photo')
-      .attach('photos', Buffer.from([1,1,1]), 'test.test.jpg')
+      .post('/recipe/' + idTest + '/photo')
+      .attach('photos', Buffer.from([1, 1, 1]), 'test.test.jpg')
       .expect(201)
       .expect({}); /** @todo Fix it */
   });

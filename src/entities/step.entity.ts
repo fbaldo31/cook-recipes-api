@@ -1,7 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
-import Timestamp from "../abstract/timestamp.abstract";
-import { Recipe } from "./recipe.entity";
+import Timestamp from '../abstract/timestamp.abstract';
+import { Recipe } from './recipe.entity';
 
 @Entity()
 export class Step extends Timestamp {
@@ -14,6 +14,6 @@ export class Step extends Timestamp {
   @Column({ type: 'text' })
   text: string;
 
-  @ManyToOne(type => Recipe, recipe => recipe.ingredients)
+  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients)
   recipe: Recipe;
 }

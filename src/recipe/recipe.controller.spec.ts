@@ -7,6 +7,7 @@ import { Recipe } from '../entities/recipe.entity';
 import { RecipeController } from './recipe.controller';
 import { RecipeService } from './recipe.service';
 import { recipeDtoTest } from '../../test/mock/recipeDto';
+import { MarmitonService } from '../services/marmiton/marmiton.service';
 
 const recipeTest: Recipe = {
   id: 0,
@@ -38,18 +39,24 @@ describe('RecipeController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [RecipeController],
       providers: [
-        { 
+        {
           provide: RecipeService,
           useValue: {
             findAll: jest.fn(),
             findOne: jest.fn(),
             create: jest.fn(),
             addPhoto: jest.fn(),
-          }
-        }
+          },
+        },
+        {
+          provide: MarmitonService,
+          useValue: {
+            getRecipesUrls: jest.fn().mockResolvedValue(['test']),
+            getRecipe: jest.fn().mockResolvedValue(recipeDtoTest),
+          },
+        },
       ],
-    })
-    .compile();
+    }).compile();
 
     controller = module.get<RecipeController>(RecipeController);
     service = await module.resolve<RecipeService>(RecipeService);
@@ -68,7 +75,9 @@ describe('RecipeController', () => {
   it('should getOneById', async () => {
     const expectedResult = recipeTest;
     jest.spyOn(service, 'findOne').mockResolvedValue(expectedResult);
-    expect(await controller.getOneById(`${recipeTest.id}`)).toEqual(expectedResult);
+    expect(await controller.getOneById(`${recipeTest.id}`)).toEqual(
+      expectedResult,
+    );
   });
 
   it('should create', async () => {
@@ -80,6 +89,11 @@ describe('RecipeController', () => {
   it('should addPhoto', async () => {
     const expectedResult = photoTest;
     jest.spyOn(service, 'addPhoto').mockResolvedValue(expectedResult);
-    expect(await controller.addPhoto([<any>{filename: 'test.jpg', buffer: Buffer.from([1,1,1,1])}], `${recipeTest.id}`)).toEqual(expectedResult);
+    expect(
+      await controller.addPhoto(
+        [<any>{ filename: 'test.jpg', buffer: Buffer.from([1, 1, 1, 1]) }],
+        `${recipeTest.id}`,
+      ),
+    ).toEqual(expectedResult);
   });
 });

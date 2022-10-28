@@ -9,6 +9,7 @@ import { Unit } from '../entities/unit.entity';
 import { RecipeController } from './recipe.controller';
 import { RecipeService } from './recipe.service';
 import { Photo } from '../entities/photo.entity';
+import { MarmitonService } from '../services/marmiton/marmiton.service';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { Photo } from '../entities/photo.entity';
     ]),
   ],
   controllers: [RecipeController],
-  providers: [RecipeService]
+  providers: [RecipeService, MarmitonService],
 })
 export class RecipeModule {}

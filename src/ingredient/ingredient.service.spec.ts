@@ -15,7 +15,10 @@ describe('IngredientService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         IngredientService,
-        { provide: getRepositoryToken(Ingredient), useFactory: repositoryMockFactory },
+        {
+          provide: getRepositoryToken(Ingredient),
+          useFactory: repositoryMockFactory,
+        },
       ],
     }).compile();
 
@@ -29,7 +32,7 @@ describe('IngredientService', () => {
 
   it('should getIngredientsNames', async () => {
     const expected = [ingredientTest.name];
-    jest.spyOn(mockIngredientRepo, 'find').mockResolvedValue([ingredientTest])
+    jest.spyOn(mockIngredientRepo, 'find').mockResolvedValue([ingredientTest]);
     expect(await service.getIngredientsNames()).toEqual(expected);
   });
 });

@@ -15,9 +15,9 @@ describe('IngredientController', () => {
           provide: IngredientService,
           useValue: {
             getIngredientsNames: jest.fn().mockResolvedValue(names),
-          }
-        }
-      ]
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<IngredientController>(IngredientController);
