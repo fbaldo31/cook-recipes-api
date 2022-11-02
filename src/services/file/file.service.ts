@@ -12,6 +12,9 @@ export class FileService {
     fileName: string,
     data: Buffer,
   ): Promise<WriteStream> {
+    if (!data) {
+      return;
+    }
     return new Promise((resolve, reject) => {
       const write = createWriteStream(join(recipeName, fileName), {
         autoClose: true,
