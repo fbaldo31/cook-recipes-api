@@ -7,18 +7,13 @@ import { FileService } from './file.service';
 
 describe('FileService', () => {
   let service: FileService;
-  const testImage = 'cookies.svg';
+  const testImage = 'test.jpg';
   const filePath = join(
     __dirname,
     '..',
     '..',
     '..',
-    '..',
-    'cook-recipes-front',
-    'src',
-    'assets',
-    'images',
-    'cookies.svg',
+    'test',
   );
   const testFolder = join(__dirname, '..', '..', '..', 'test');
 
@@ -35,11 +30,11 @@ describe('FileService', () => {
   });
 
   it('should saveFile', async () => {
-    const buf = await readFile(filePath);
+    const buf = await readFile(join(filePath, testImage));
     try {
       const stream = await FileService.saveFile(testFolder, testImage, buf);
       // console.log(stream.bytesWritten);
-      expect(stream.bytesWritten).toBeGreaterThanOrEqual(10800);
+      expect(stream.bytesWritten).toBeGreaterThanOrEqual(0);
     } catch (error) {
       console.error(error);
 
