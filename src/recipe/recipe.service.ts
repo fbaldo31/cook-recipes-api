@@ -49,15 +49,15 @@ export class RecipeService {
     private readonly photoRepo: Repository<Photo>,
   ) {}
 
-  findAll() {
+  findAll(): Promise<Recipe[]> {
     return this.repo.find();
   }
 
-  findOne(id: number) {
+  findOne(id: number): Promise<Recipe> {
     return this.repo.findOne({ where: { id } });
   }
 
-  async create(recipeDto: RecipeDto) {
+  async create(recipeDto: RecipeDto): Promise<Recipe> {
     if (!recipeDto.ingredients?.length) {
       throw new HttpException('No ingredient provided', HttpStatus.BAD_REQUEST);
     }
@@ -66,6 +66,7 @@ export class RecipeService {
     }
 
     try {
+      // Save recipe
       const recipe = await this.repo.save(
         this.repo.create({
           title: recipeDto.title,
@@ -74,9 +75,9 @@ export class RecipeService {
           difficulty: recipeDto.difficulty,
         }),
       );
-      const promises: Promise<any>[] = [
-        // Build ingredientsQuantity
-        ...recipeDto.ingredients.map(async (e) => {
+      // Build ingredientsQuantity
+      const i = await Promise.all(
+        recipeDto.ingredients.map(async (e) => {
           const ingredient = await this.createIngredient(e.name);
           const unit = await this.createUnit(e.unit);
           return this.ingredientsQuantityRepo.save({
@@ -86,14 +87,15 @@ export class RecipeService {
             recipe,
           });
         }),
-        // Build Steps
-        ...recipeDto.steps.map((e) =>
+      );
+
+      // Build Steps
+      await Promise.all(
+        recipeDto.steps.map((e) =>
           this.stepRepo.save(this.stepRepo.create({ ...e, recipe })),
         ),
-      ];
-      // Save relations
-      await Promise.all(promises);
-      // Save recipe
+      );
+      Logger.log(`New recipe ${recipe.title} created with ${recipeDto.ingredients.length} ingredients and ${recipeDto.steps.length} steps.`, 'RecipeService.create');
       return this.repo.findOneBy({ id: recipe.id });
     } catch (error) {
       Logger.error(error.message, 'RecipeService.create');
