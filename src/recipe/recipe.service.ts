@@ -15,25 +15,6 @@ import { RecipeDto } from '../dto/recipe.dto';
 
 @Injectable()
 export class RecipeService {
-  dto = {
-    title: 'Recette test',
-    difficulty: 'Facile',
-    preparationTime: '1',
-    cookingTime: '20',
-    ingredients: [
-      {
-        name: 'Ingredient test',
-        quantity: '1',
-        unit: 'gramme',
-      },
-    ],
-    steps: [
-      {
-        position: '1',
-        text: 'Etape test',
-      },
-    ],
-  };
   constructor(
     @InjectRepository(Recipe)
     private readonly repo: Repository<Recipe>,
@@ -76,7 +57,7 @@ export class RecipeService {
         }),
       );
       // Build ingredientsQuantity
-      const i = await Promise.all(
+      await Promise.all(
         recipeDto.ingredients.map(async (e) => {
           const ingredient = await this.createIngredient(e.name);
           const unit = await this.createUnit(e.unit);
@@ -95,7 +76,10 @@ export class RecipeService {
           this.stepRepo.save(this.stepRepo.create({ ...e, recipe })),
         ),
       );
-      Logger.log(`New recipe ${recipe.title} created with ${recipeDto.ingredients.length} ingredients and ${recipeDto.steps.length} steps.`, 'RecipeService.create');
+      Logger.log(
+        `New recipe ${recipe.title} created with ${recipeDto.ingredients.length} ingredients and ${recipeDto.steps.length} steps.`,
+        'RecipeService.create',
+      );
       return this.repo.findOneBy({ id: recipe.id });
     } catch (error) {
       Logger.error(error.message, 'RecipeService.create');
