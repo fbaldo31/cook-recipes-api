@@ -8,6 +8,7 @@ import { RecipeController } from './recipe.controller';
 import { RecipeService } from './recipe.service';
 import { recipeDtoTest } from '../../test/mock/recipeDto';
 import { MarmitonService } from '../services/marmiton/marmiton.service';
+import { ingredientQtyTest } from '../../test/mock/ingredientQuantity';
 
 const recipeTest: Recipe = {
   id: 0,
@@ -46,6 +47,8 @@ describe('RecipeController', () => {
             findOne: jest.fn(),
             create: jest.fn(),
             addPhoto: jest.fn(),
+            delete: jest.fn(),
+            removeIngredient: jest.fn(),
           },
         },
         {
@@ -84,6 +87,20 @@ describe('RecipeController', () => {
     const expectedResult = recipeTest;
     jest.spyOn(service, 'create').mockResolvedValue(expectedResult);
     expect(await controller.create(recipeDtoTest)).toEqual(expectedResult);
+  });
+
+  it('should delete', async () => {
+    const expectedResult = recipeTest;
+    jest.spyOn(service, 'delete').mockResolvedValue(expectedResult);
+    expect(await controller.delete(`${recipeTest.id}`)).toEqual(expectedResult);
+  });
+
+  it('should removeIngredient', async () => {
+    const expectedResult = ingredientQtyTest;
+    jest.spyOn(service, 'removeIngredient').mockResolvedValue(expectedResult);
+    expect(
+      await controller.removeIngredient(`${ingredientQtyTest.id}`),
+    ).toEqual(expectedResult);
   });
 
   it('should addPhoto', async () => {

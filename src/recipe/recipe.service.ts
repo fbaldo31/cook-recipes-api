@@ -147,4 +147,13 @@ export class RecipeService {
       Logger.error(error.message, 'RecipeService.delete');
     }
   }
+
+  async removeIngredient(
+    ingredientQuantityId: number,
+  ): Promise<IngredientsQuantity> {
+    const ingredient = await this.ingredientsQuantityRepo.findOneBy({
+      id: ingredientQuantityId,
+    });
+    return this.ingredientsQuantityRepo.remove(ingredient);
+  }
 }

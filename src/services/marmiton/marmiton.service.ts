@@ -35,9 +35,9 @@ export class MarmitonService {
       title: recipe.name,
       preparationTime: recipe.prepTime,
       cookingTime: recipe.totalTime - recipe.prepTime,
-      difficulty: Difficulty[recipe.difficulty],
+      difficulty: Difficulty[recipe.difficulty] || Difficulty.EASY,
       ingredients: recipe.ingredients.map((e) => this.parseIngredients(e)),
-      steps: recipe.steps,
+      steps: recipe.steps.map((e, i) => ({ position: i + 1, text: e })),
     };
   }
 

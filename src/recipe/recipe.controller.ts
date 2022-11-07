@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UploadedFiles,
 } from '@nestjs/common';
 
@@ -12,6 +13,7 @@ import { MarmitonService } from '../services/marmiton/marmiton.service';
 import { RecipeDto } from '../dto/recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeService } from './recipe.service';
+import { IngredientsQuantity } from '../entities/ingredients_quantity.entity';
 
 @Controller('recipe')
 export class RecipeController {
@@ -20,15 +22,15 @@ export class RecipeController {
     private marmiton: MarmitonService,
   ) {}
 
-  @Get('marmiton/urls')
+  @Get('marmiton/urls/:title')
   getMarmitonRecipesUrls(@Param('title') title: string): Promise<string[]> {
     return this.marmiton.getRecipesUrls(title);
   }
 
   @Get('marmiton')
   getMarmitonRecipe(
-    @Param('title') title: string,
-    @Param('url') url: string,
+    @Query('title') title: string,
+    @Query('url') url: string,
   ): Promise<RecipeDto> {
     return this.marmiton.getRecipe(title, url);
   }
@@ -51,6 +53,11 @@ export class RecipeController {
   @Delete(':id')
   delete(@Param('id') id: string): Promise<Recipe> {
     return this.service.delete(+id);
+  }
+
+  @Delete('ingredient/:id')
+  removeIngredient(@Param('id') id: string): Promise<IngredientsQuantity> {
+    return this.service.removeIngredient(+id);
   }
 
   @Post('/:id/photo')
