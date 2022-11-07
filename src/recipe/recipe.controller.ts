@@ -14,6 +14,7 @@ import { RecipeDto } from '../dto/recipe.dto';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeService } from './recipe.service';
 import { IngredientsQuantity } from '../entities/ingredients_quantity.entity';
+import { Step } from '../entities/step.entity';
 
 @Controller('recipe')
 export class RecipeController {
@@ -58,6 +59,11 @@ export class RecipeController {
   @Delete('ingredient/:id')
   removeIngredient(@Param('id') id: string): Promise<IngredientsQuantity> {
     return this.service.removeIngredient(+id);
+  }
+
+  @Delete('step/:id')
+  removeStep(@Param('id') id: string): Promise<Step> {
+    return this.service.removeStep(+id);
   }
 
   @Post('/:id/photo')

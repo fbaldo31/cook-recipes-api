@@ -156,4 +156,9 @@ export class RecipeService {
     });
     return this.ingredientsQuantityRepo.remove(ingredient);
   }
+
+  async removeStep(stepId: number): Promise<Step> {
+    const step = await this.stepRepo.findOneBy({ id: stepId });
+    return this.stepRepo.remove(step);
+  }
 }

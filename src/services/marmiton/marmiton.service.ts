@@ -50,6 +50,7 @@ export class MarmitonService {
         if (qty.includes('/')) {
           quantity = +qty.split('/')[0] / +qty.split('/')[1];
         }
+        // Quantity may be not provided by marmiton :/
       } else {
         quantity = +qty;
       }
@@ -58,13 +59,21 @@ export class MarmitonService {
         return {
           name: words[1],
           quantity,
-          unit: UNITS[UNITS.pièce],
+          unit: UNITS.pièce,
         };
       }
 
       const u = words[1];
-      const unit = UNITS[u] || u;
-      const name = words.slice(3).join(' ');
+      /** @todo fix unit */
+      const unit = UNITS[u] || u || UNITS.pièce;
+      let name = words.slice(3).join(' ');
+      if (name === '') {
+        name = words.slice(2).join(' ');
+      }
+      if (!quantity) {
+        name = words.join(' ');
+      }
+
       return { name, unit, quantity };
     } catch (error) {
       Logger.error(

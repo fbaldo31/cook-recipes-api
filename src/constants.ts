@@ -18,4 +18,7 @@ export const UNITS = {
   pièce: '',
   pot: 'pot',
   sachet: 'sachet',
+  gousse: 'gousse',
+  tete: 'tête',
+  zeste: 'zeste',
 };

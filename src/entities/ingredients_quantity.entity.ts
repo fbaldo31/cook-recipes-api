@@ -17,7 +17,7 @@ export class IngredientsQuantity extends Timestamp {
   ingredient: Ingredient;
 
   @Column({ type: 'smallint' })
-  quantity: number;
+  quantity?: number;
 
   @ManyToOne(() => Unit, (unit) => unit.ingredientsQuantity, {
     eager: true,
