@@ -4,16 +4,36 @@ export enum Difficulty {
   HARD = 'Difficile',
 }
 
+export enum Units {
+  gramme = 'g',
+  kilo = 'kg',
+  millilitre = 'ml',
+  centilitre = 'cl',
+  décilitre = 'dl',
+  litre = 'l',
+  pincée = 'p',
+  'cuillère à soupe' = 'c.à.s',
+  'cuillère à café' = 'c.à.c',
+  tasse = 't',
+  pièce = '',
+  pot = 'pot',
+  sachet = 'sachet',
+  gousse = 'gousse',
+  tete = 'tête',
+  zeste = 'zeste',
+  'un peu' = 'un peu',
+}
+
 export const UNITS = {
   gramme: 'g',
   kilo: 'kg',
   millilitre: 'ml',
   centilitre: 'cl',
   décilitre: 'dl',
-  litre: 'L',
+  litre: 'l',
   pincée: 'p',
-  'cuillère à soupe': 'c a s',
-  'cuillère à café': 'c a c',
+  'cuillère à soupe': 'c.à.s',
+  'cuillère à café': 'c.à.c',
   tasse: 't',
   pièce: '',
   pot: 'pot',
@@ -21,4 +41,5 @@ export const UNITS = {
   gousse: 'gousse',
   tete: 'tête',
   zeste: 'zeste',
+  'un peu': 'un peu',
 };

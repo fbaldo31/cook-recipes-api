@@ -12,19 +12,20 @@ export class IngredientsQuantity extends Timestamp {
 
   @ManyToOne(() => Ingredient, (i) => i.ingredientsQuantity, {
     eager: true,
+    nullable: false,
     cascade: ['insert'],
   })
   ingredient: Ingredient;
 
-  @Column({ type: 'smallint' })
+  @Column({ type: 'real' })
   quantity?: number;
 
   @ManyToOne(() => Unit, (unit) => unit.ingredientsQuantity, {
     eager: true,
-    cascade: ['insert'],
+    nullable: false,
   })
   unit: Unit;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients)
+  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, { nullable: false })
   recipe: Recipe;
 }

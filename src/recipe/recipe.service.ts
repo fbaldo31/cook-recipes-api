@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { join } from 'path';
 
 import { IngredientsQuantity } from '../entities/ingredients_quantity.entity';
@@ -10,8 +10,8 @@ import { FileService } from '../services/file/file.service';
 import { Recipe } from '../entities/recipe.entity';
 import { Ingredient } from '../entities/ingredient.entity';
 import { Unit } from '../entities/unit.entity';
-import { UNITS } from '../constants';
 import { RecipeDto } from '../dto/recipe.dto';
+import { Units } from '../constants';
 
 @Injectable()
 export class RecipeService {
@@ -47,61 +47,89 @@ export class RecipeService {
     }
 
     try {
-      // Save recipe
-      const recipe = await this.repo.save(
-        this.repo.create({
-          title: recipeDto.title,
-          preparationTime: recipeDto.preparationTime,
-          cookingTime: recipeDto.cookingTime,
-          difficulty: recipeDto.difficulty,
-        }),
-      );
-      // Build ingredientsQuantity
-      await Promise.all(
-        recipeDto.ingredients.map(async (e) => {
-          const ingredient = await this.createIngredient(e.name);
-          const unit = await this.createUnit(e.unit);
-          return this.ingredientsQuantityRepo.save({
-            ingredient,
-            quantity: e.quantity,
-            unit,
-            recipe,
-          });
-        }),
-      );
+      let recipe: Recipe;
+      await this.repo.manager.transaction(async (em: EntityManager) => {
+        // Save recipe
+        const entity = new Recipe();
+        entity.title = recipeDto.title;
+        entity.preparationTime = recipeDto.preparationTime;
+        entity.cookingTime = recipeDto.cookingTime;
+        entity.difficulty = recipeDto.difficulty;
+        recipe = await em.save(entity);
+        // Build ingredientsQuantity
+        await Promise.all(
+          recipeDto.ingredients.map(async (e) => {
+            const ingredient = await this.createIngredient(e.name, em);
+            const unit = await this.createUnit(e.unit, em);
+            const ingredientQuantity = new IngredientsQuantity();
+            ingredientQuantity.ingredient = ingredient;
+            ingredientQuantity.unit = unit;
+            ingredientQuantity.quantity = e.quantity;
+            ingredientQuantity.recipe = recipe;
+            return em.save(IngredientsQuantity, ingredientQuantity);
+          }),
+        );
 
-      // Build Steps
-      await Promise.all(
-        recipeDto.steps.map((e) =>
-          this.stepRepo.save(this.stepRepo.create({ ...e, recipe })),
-        ),
-      );
-      Logger.log(
-        `New recipe ${recipe.title} created with ${recipeDto.ingredients.length} ingredients and ${recipeDto.steps.length} steps.`,
-        'RecipeService.create',
-      );
+        // Build Steps
+        await Promise.all(
+          recipeDto.steps.map((e) =>
+            em.save(this.stepRepo.create({ ...e, recipe })),
+          ),
+        );
+        Logger.log(
+          `New recipe ${recipe.title} created with ${recipeDto.ingredients.length} ingredients and ${recipeDto.steps.length} steps.`,
+          'RecipeService.create',
+        );
+      });
       return this.repo.findOneBy({ id: recipe.id });
     } catch (error) {
-      Logger.error(error.message, 'RecipeService.create');
+      Logger.error(error.stack, 'RecipeService.create');
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   /** reate an ingredient if not existing */
-  async createIngredient(name: string): Promise<Ingredient> {
-    const existing = await this.ingredientsRepo.findOneBy({ name });
+  async createIngredient(name: string, em: EntityManager): Promise<Ingredient> {
+    const existing = await em.findOneBy(Ingredient, { name });
     if (!existing) {
-      return this.ingredientsRepo.save(this.ingredientsRepo.create({ name }));
+      const entity = new Ingredient();
+      entity.name = name;
+      return entity;
     }
     return existing;
   }
 
   /** Create a Unit if not existing */
-  async createUnit(label: string): Promise<Unit> {
-    const existing = await this.unitsRepo.findOneBy({ label });
+  async createUnit(
+    input: string = Units.pièce,
+    em: EntityManager,
+  ): Promise<Unit> {
+    const labels = Object.keys(Units);
+    const isLabel = !!Units[input];
+    const all = await em.find(Unit);
+    const existing = all.find((e) => e.slug === input || e.label === input);
     if (!existing) {
-      return this.unitsRepo.save(
-        this.unitsRepo.create({ label, slug: UNITS[label] }),
-      );
+      try {
+        const entity = new Unit();
+        if (isLabel) {
+          entity.label = input;
+          entity.slug = Units[input];
+        } else {
+          entity.slug = input;
+          entity.label = labels.find((e) => Units[e] === input);
+        }
+        Logger.log(
+          `Save new unit "${entity.label}" "${entity.slug}"`,
+          'createUnit',
+        );
+        return em.save(Unit, entity);
+        // return (await em.upsert(Unit, entity, {conflictPaths: ['label', 'slug']})).raw;
+      } catch (error) {
+        Logger.error(
+          `Error while saving new unit ${input}: ${error.message}`,
+          'createUnit',
+        );
+      }
     }
     return existing;
   }
@@ -154,11 +182,17 @@ export class RecipeService {
     const ingredient = await this.ingredientsQuantityRepo.findOneBy({
       id: ingredientQuantityId,
     });
+    if (!ingredient) {
+      return;
+    }
     return this.ingredientsQuantityRepo.remove(ingredient);
   }
 
   async removeStep(stepId: number): Promise<Step> {
     const step = await this.stepRepo.findOneBy({ id: stepId });
+    if (!step) {
+      return;
+    }
     return this.stepRepo.remove(step);
   }
 }

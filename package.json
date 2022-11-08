@@ -1,6 +1,6 @@
 {
   "name": "cook-recipes-api",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "",
   "author": "Frédérick BALDO <f.baldo31@gmail.com>",
   "private": true,
@@ -36,6 +36,7 @@
     "typeorm": "^0.3.10"
   },
   "devDependencies": {
+    "@golevelup/ts-jest": "^0.3.4",
     "@nestjs/cli": "^9.1.5",
     "@nestjs/schematics": "^9.0.3",
     "@nestjs/testing": "^9.1.6",

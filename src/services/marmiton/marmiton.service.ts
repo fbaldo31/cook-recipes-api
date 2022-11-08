@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { MarmitonQueryBuilder, Recipe, searchRecipes } from 'marmiton-api';
 
-import { Difficulty, UNITS } from '../../constants';
+import { Difficulty, Units } from '../../constants';
 import { IngredientsQuantityDto } from '../../dto/ingredientQuantity.dto';
 import { RecipeDto } from '../../dto/recipe.dto';
 
@@ -59,13 +59,12 @@ export class MarmitonService {
         return {
           name: words[1],
           quantity,
-          unit: UNITS.pièce,
+          unit: Units.pièce,
         };
       }
 
       const u = words[1];
-      /** @todo fix unit */
-      const unit = UNITS[u] || u || UNITS.pièce;
+      const unit = !quantity ? Units['un peu'] : this.parseUnit(u);
       let name = words.slice(3).join(' ');
       if (name === '') {
         name = words.slice(2).join(' ');
@@ -81,6 +80,17 @@ export class MarmitonService {
         'MarmitonService',
       );
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private parseUnit(input: string | Units): Units {
+    if (Units[input]) {
+      return Units[input];
+    } else if (Object.values(Units).includes(input.toLowerCase() as Units)) {
+      return input.toLowerCase() as Units;
+    } else {
+      Logger.log(input);
+      return Units.pièce;
     }
   }
 }

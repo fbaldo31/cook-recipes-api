@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { createMock } from '@golevelup/ts-jest';
+import { Repository, EntityManager } from 'typeorm';
 
-import { repositoryMockFactory } from '../../test/utils';
+import { mockEntityManager, repositoryMockFactory } from '../../test/utils';
 import { Recipe } from '../entities/recipe.entity';
 import { RecipeService } from './recipe.service';
 import { Ingredient } from '../entities/ingredient.entity';
@@ -24,6 +25,7 @@ describe('RecipeService', () => {
   let mockUnitRepo: Repository<Unit>;
   let mockIngredientsQuantityRepo: Repository<IngredientsQuantity>;
   // let mockPhotoRepo: Repository<Photo>;
+  let entityManager: EntityManager;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -54,6 +56,7 @@ describe('RecipeService', () => {
           provide: getRepositoryToken(Photo),
           useFactory: repositoryMockFactory,
         },
+        { provide: EntityManager, useValue: createMock<EntityManager>() },
       ],
     }).compile();
 
@@ -64,6 +67,11 @@ describe('RecipeService', () => {
     mockIngredientsQuantityRepo = module.get(
       getRepositoryToken(IngredientsQuantity),
     );
+
+    entityManager = module.get(EntityManager);
+    mockRecipeRepo.manager.transaction = (
+      entityManager.transaction as jest.Mock
+    ).mockImplementation((cb) => cb(mockEntityManager));
     // mockPhotoRepo = module.get(getRepositoryToken(Photo));
   });
 

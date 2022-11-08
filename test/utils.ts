@@ -1,3 +1,4 @@
+import { createMock } from '@golevelup/ts-jest';
 import { Repository } from 'typeorm';
 
 export type MockType<T> = {
@@ -13,5 +14,21 @@ export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
     save: jest.fn((entity) => entity),
     findOneBy: jest.fn(),
     remove: jest.fn(),
+    manager: jest.fn().mockReturnValue(mockEntityManager),
   }),
 );
+
+export const mockEntityManager = {
+  findOne: jest.fn((entity) => entity),
+  find: jest.fn((entity) => [entity]),
+  create: jest.fn((entity) => entity),
+  save: jest.fn((entity) => entity),
+  findOneBy: jest.fn(),
+  remove: jest.fn(),
+  transaction: jest.fn(),
+  getCustomRepository: jest.fn(
+    (fn) =>
+      mockEntityManager[fn] ||
+      (mockEntityManager[fn] = createMock<typeof fn>()),
+  ),
+};
