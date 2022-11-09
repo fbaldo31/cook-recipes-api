@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -11,7 +12,11 @@ import { MarmitonService } from './services/marmiton/marmiton.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ cache: true }),
+    ConfigModule.forRoot({
+      envFilePath: join(__dirname, '..', '.env'),
+      isGlobal: true,
+      cache: true,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -24,7 +29,7 @@ import { MarmitonService } from './services/marmiton/marmiton.service';
         schema: configService.get('DATABASE_SCHEMA'),
         entities: [__dirname + '/entities/*.entity{.ts,.js}'],
         synchronize:
-          configService.get('NOVE_ENV') === 'producion' ? false : true,
+          configService.get('NOVE_ENV') === 'production' ? false : true,
         cache: true,
       }),
       inject: [ConfigService],
