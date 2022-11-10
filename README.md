@@ -1,3 +1,32 @@
+# <p align="center">cook-recipes-api</p>
+
+## Prerequisites
+
+- Node v16.x
+- PostgreSQL v13
+
+## Build docker image
+
+```bash
+docker build -t cook-recipes-api:latest  \
+-e NODE_ENV=dev \
+DATABASE_HOST=localhost \
+DATABASE_PORT=5432 \
+DATABASE_USER=my_user \
+DATABASE_PASSWORD=my_secret \
+DATABASE_NAME=cook_recipes \
+DATABASE_SCHEMA=my_scema \
+.
+```
+
+## Install
+
+`npm i`
+
+## Run
+
+`npm start`
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
