@@ -1,12 +1,12 @@
 FROM node:16-alpine
 
-WORKDIR /opt
+WORKDIR /usr/src/app
 
-COPY . /opt/
+COPY . .
 
-RUN npm install --production
-RUN npm build
+RUN npm install
+RUN npm run build
 
 EXPOSE 3000
 
-ENTRYPOINT ["node", "dist/main"]
+CMD ["node", "dist/main"]

@@ -7,16 +7,18 @@
 
 ## Build docker image
 
+
+`docker build -t cook-recipes-api:latest .`
+
 ```bash
-docker build -t cook-recipes-api:latest  \
--e NODE_ENV=dev \
-DATABASE_HOST=localhost \
-DATABASE_PORT=5432 \
-DATABASE_USER=my_user \
-DATABASE_PASSWORD=my_secret \
-DATABASE_NAME=cook_recipes \
-DATABASE_SCHEMA=my_scema \
-.
+docker run -e NODE_ENV=dev \
+  DATABASE_HOST=localhost \
+  DATABASE_PORT=5432 \
+  DATABASE_USER=my_user \
+  DATABASE_PASSWORD=my_secret \
+  DATABASE_NAME=cook_recipes \
+  DATABASE_SCHEMA=my_scema \
+  .
 ```
 
 ## Install
