@@ -1,11 +1,10 @@
-FROM node:16-alpine
+FROM node:16.16.0
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY node_modules .
 
-RUN npm install
-RUN npm run build
+COPY dist .
 
 EXPOSE 3000
 
