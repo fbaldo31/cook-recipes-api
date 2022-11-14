@@ -1,10 +1,10 @@
-FROM node:16.16.0
+FROM node:16-slim
 
 WORKDIR /usr/src/app
 
-COPY node_modules .
+COPY node_modules /usr/src/app/node_modules/
 
-COPY dist .
+COPY dist /usr/src/app/dist/
 
 EXPOSE 3000
 
